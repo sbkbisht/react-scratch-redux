@@ -1,36 +1,49 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import NewTodoForm from "./NewTodoForm";
 import TodoListItem from "./TodoListItem";
+import { loadTodos } from "./thunk";
 import { removeTodo, markTodoAsCompleted } from "./actions";
 import { displayAlert } from "./thunk";
 import "./TodoList.css";
+import { isLoading } from "./reducers";
 
 const TodoList = ({
   todos = [],
   onRemovePressed,
   onCompletedPressed,
   onDisplayAlertClicked,
-}) => (
-  <div className="list-wrapper">
-    <NewTodoForm />
-    {todos.map((todo) => (
-      <TodoListItem
-        todo={todo}
-        onRemovePressed={onRemovePressed}
-        onCompletedPressed={onCompletedPressed}
-        // simple example of use thunk middleware
-        // onCompletedPressed={onDisplayAlertClicked}
-      />
-    ))}
-  </div>
-);
+  isLoading,
+  startLoadingTodos,
+}) => {
+  useEffect(() => {
+    startLoadingTodos();
+  }, []);
+  const loadingMessage = <div>Loading todos...</div>;
+  const content = (
+    <div className="list-wrapper">
+      <NewTodoForm />
+      {todos.map((todo) => (
+        <TodoListItem
+          todo={todo}
+          onRemovePressed={onRemovePressed}
+          onCompletedPressed={onCompletedPressed}
+          // simple example of use thunk middleware
+          // onCompletedPressed={onDisplayAlertClicked}
+        />
+      ))}
+    </div>
+  );
+  return isLoading ? loadingMessage : content;
+};
 
 const mapStateToProps = (state) => ({
+  isLoading: state.isLoading,
   todos: state.todos,
 });
 
 const mapDispatchToProps = (dispatch) => ({
+  startLoadingTodos: () => dispatch(loadTodos()),
   onRemovePressed: (text) => dispatch(removeTodo(text)),
   onCompletedPressed: (text) => dispatch(markTodoAsCompleted(text)),
   // using thunk
