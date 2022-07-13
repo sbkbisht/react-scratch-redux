@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import NewTodoForm from "./NewTodoForm";
 import TodoListItem from "./TodoListItem";
-import { loadTodos } from "./thunk";
-import { removeTodo, markTodoAsCompleted } from "./actions";
+import { loadTodos, removeTodoRequest } from "./thunk";
+import { markTodoAsCompleted } from "./actions";
 import { displayAlert } from "./thunk";
 import "./TodoList.css";
 import { isLoading } from "./reducers";
@@ -44,7 +44,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   startLoadingTodos: () => dispatch(loadTodos()),
-  onRemovePressed: (text) => dispatch(removeTodo(text)),
+  //   onRemovePressed: (text) => dispatch(removeTodo(text)),
+  onRemovePressed: (id) => dispatch(removeTodoRequest(id)),
   onCompletedPressed: (text) => dispatch(markTodoAsCompleted(text)),
   // using thunk
   //this is going to be a function, doesn't take any argument as argument not passed inside thunk.js displayAlert()
